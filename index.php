@@ -6,9 +6,28 @@ $email = $_POST['email'];
 
 
 if(isset($_POST['submit'])){
-    $sql = "INSERT INTO users(firstName, lastName, email)
-            VALUES ('$firstName','$lastName','$email')";
-    mysqli_query($connection,$sql);
+    
+    $sql = "INSERT INTO users(firstName, lastName, email) VALUES ('$firstName','$lastName','$email')";
+
+    if(empty($firstName)){
+        echo 'please enter the first name';
+    }elseif(empty($lastName)){
+        echo 'please enter last name';
+    }elseif(empty($email)){
+        echo 'please enter your email';   
+    }elseif(!filter_var($email,FILTER_VALIDATE_EMAIL)){
+        /* email validateion  */
+        echo 'enter correct email';
+    }else{
+        if(mysqli_query($connection,$sql)){
+            header('Location: index.php');
+            echo 'success';
+        }else{
+            echo 'error: ' . mysqli_error($connection);
+        }  
+    }
+
+       
 }
 
 
@@ -33,8 +52,8 @@ if(isset($_POST['submit'])){
             <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="#">upgrade your browser</a> to improve your experience.</p>
         <![endif]-->
 
-        <form action="index.php" method="post">
-            <input type="text" name="firstName" id="firstName" placeholder="الاسم الاول">
+        <form action="index.php" method="post" enctype="multipart/form-data">
+            <input type="text" name="firstName" id="firstName" placeholder="first name">
             <input type="text" name="lastName" id="lastName" placeholder="Last Name">
             <input type="email" name="email" id="email" placeholder="Email">
             <input type="submit" name="submit" value="send">
